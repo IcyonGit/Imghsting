@@ -1,0 +1,35 @@
+{
+    "name": "image-hosting-site",
+    "version": "1.0.0",
+    "description": "A serverless image hosting site using GitHub and Netlify.",
+    "main": "index.js",
+    "scripts": {
+      "start": "netlify dev",
+      "build": "echo 'No build command needed' && exit 0"
+    },
+    "dependencies": {
+      "node-fetch": "^2.6.1",
+      "form-data": "^4.0.0",
+      "@octokit/rest": "^18.0.12"
+    },
+    "devDependencies": {
+      "netlify-cli": "^12.0.0"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/yourusername/image-hosting-site.git"
+    },
+    "keywords": [
+      "netlify",
+      "serverless",
+      "image-hosting",
+      "github"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/yourusername/image-hosting-site/issues"
+    },
+    "homepage": "https://github.com/yourusername/image-hosting-site#readme"
+  }
+  
