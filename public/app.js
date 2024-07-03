@@ -40,7 +40,6 @@ async function uploadFile(file) {
 function copyToClipboard() {
     const copyText = document.getElementById('image-link');
     copyText.select();
-    copyText.setSelectionRange(0, 99999); // For mobile devices
     document.execCommand('copy');
     alert('Copied the link: ' + copyText.value);
 }
