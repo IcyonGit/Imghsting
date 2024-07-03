@@ -5,9 +5,10 @@ document.getElementById('copy-button').addEventListener('click', copyToClipboard
 async function handleDrop(e) {
     e.preventDefault();
     const files = e.dataTransfer.files;
-    for (let i = 0; i < files.length; i++) {
-        await uploadFile(files[i]);
-    }
+    // Use Promise.all to handle multiple file uploads concurrently and wait for all to complete
+    await Promise.all(Array.from(files).map(file => uploadFile(file)));
+    // Show the link display section after files are uploaded
+    document.getElementById('link-display').classList.remove('hidden');
 }
 
 function handleDragOver(e) {
@@ -18,24 +19,26 @@ async function uploadFile(file) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch('/.netlify/functions/upload', {
-        method: 'POST',
-        body: formData,
-    });
+    try {
+        const response = await fetch('/.netlify/functions/upload', {
+            method: 'POST',
+            body: formData,
+        });
 
-    const data = await response.json();
-    if (data.url) {
-        const linkInput = document.getElementById('image-link');
-        linkInput.value = data.url;
-        document.getElementById('link-display').classList.remove('hidden');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-        const link = document.createElement('a');
-        link.href = data.url;
-        link.innerText = data.url;
-        document.body.appendChild(link);
-        document.body.appendChild(document.createElement('br'));
+        const data = await response.json();
+        if (data.url) {
+            const linkInput = document.getElementById('image-link');
+            linkInput.value = data.url;
+        }
+    } catch (error) {
+        console.error('Upload failed:', error);
     }
 }
+
 
 function copyToClipboard() {
     const copyText = document.getElementById('image-link');
