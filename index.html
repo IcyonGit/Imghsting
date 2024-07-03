@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Hosting</title>
+    <style>
+        #drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="drop-area">
+        <h3>Drag and drop files here</h3>
+        <input type="file" id="fileElem" class="hidden" multiple>
+        <label class="button" for="fileElem">Select some files</label>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
