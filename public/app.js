@@ -5,14 +5,22 @@ document.getElementById('copy-button').addEventListener('click', copyToClipboard
 async function handleDrop(e) {
     e.preventDefault();
     const files = e.dataTransfer.files;
-    // Use Promise.all to handle multiple file uploads concurrently and wait for all to complete
-    await Promise.all(Array.from(files).map(file => uploadFile(file)));
-    // Show the link display section after files are uploaded
-    document.getElementById('link-display').classList.remove('hidden');
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
+    const links = await Promise.all(Array.from(files).map(file => uploadFile(file)));
+    const linkDisplay = document.getElementById('link-display');
+    linkDisplay.classList.remove('hidden');
+    // Handle multiple file uploads
+    links.forEach(link => {
+        if (link) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = link;
+            linkDisplay.appendChild(input);
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.onclick = () => copyToClipboard(input);
+            linkDisplay.appendChild(copyButton);
+        }
+    });
 }
 
 async function uploadFile(file) {
@@ -20,7 +28,7 @@ async function uploadFile(file) {
     formData.append('file', file);
 
     try {
-        const response = await fetch('/.netlify/functions/upload', {
+        const response = await fetch('/api/upload', { // Assuming the Netlify function is accessible at this endpoint
             method: 'POST',
             body: formData,
         });
@@ -30,20 +38,17 @@ async function uploadFile(file) {
         }
 
         const data = await response.json();
-        if (data.url) {
-            const linkInput = document.getElementById('image-link');
-            linkInput.value = data.url;
-        }
+        return data.url;
     } catch (error) {
         console.error('Upload failed:', error);
     }
 }
 
-
-function copyToClipboard() {
-    const copyText = document.getElementById('image-link');
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // For mobile devices
-    document.execCommand('copy');
-    alert('Copied the link: ' + copyText.value);
+function copyToClipboard(input) {
+    input.select();
+    navigator.clipboard.writeText(input.value);
+    alert('Copied the link: ' + input.value);
 }
+
+document.getElementById('drop-area').addEventListener('drop', handleDrop, false);
+document.getElementById('drop-area').addEventListener('dragover', handleDragOver, false);
